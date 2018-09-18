@@ -1,0 +1,12 @@
+Valida
+Hombre
+168
+Mujer
+6
+No valida
+Hombre
+300
+Mujer
+0
+Test
+2

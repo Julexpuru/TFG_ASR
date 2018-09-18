@@ -1,0 +1,12 @@
+Valida
+Hombre
+28
+Mujer
+1
+No valida
+Hombre
+50
+Mujer
+0
+Test
+2
