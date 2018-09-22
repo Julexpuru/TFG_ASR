@@ -127,6 +127,7 @@ def crear_modelo():
 
     model.save("modelo_comando")
     print("Modelo guardado")
+    return model;
 
 def entrenar_modelo(path,correct):
     print("Procediendo a entrenar modelo...")
@@ -150,9 +151,6 @@ def obtener_prediccion(path):
     model=keras.models.load_model("modelo_comando")
     print("Procesando prediccion...")
     
-    while not (Path("muestras/"+path).is_file()):
-        print("El archivo indicado no existe, introduzca uno valido")
-        path=input()
     candidate= obtener_muestra("muestras/"+path)
     result= model.predict(np.expand_dims(candidate,axis=0))
     
