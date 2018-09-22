@@ -1,0 +1,1 @@
+El 4BLSTM todavia no ha dado fallos conocidos (excepto volando, ese es un fallo asumido)

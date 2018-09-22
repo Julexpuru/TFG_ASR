@@ -3,7 +3,7 @@ from pathlib import Path
 
 import keras
 from keras.models import Sequential
-from keras.layers import Dense, Activation,Bidirectional,LSTM
+from keras.layers import Dense, Activation,Bidirectional,LSTM,CuDNNLSTM
 
 import sounddevice as sd
 import soundfile as sf
@@ -39,7 +39,7 @@ def crear_modelo():
     ################################################### Opcion LSTM
 
     #Modificar para probar distintos modelos
-    hidden_size=200
+    hidden_size=100
     epochs=25
     activation="tanh"
 
@@ -52,10 +52,13 @@ def crear_modelo():
 
     print("Creando Modelo...")
     model= Sequential()
-    #model.add(LSTM(hidden_size,input_shape=[199,13],return_sequences=True))
-    model.add(Bidirectional(LSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
-    model.add(Bidirectional(LSTM(hidden_size,input_shape=[199,13])))
-    #model.add(LSTM(hidden_size,input_shape=[199,13]))
+    #model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
+    #model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
+    model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
+    model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
+    model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
+    model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13])))
+    #model.add(CuDNNLSTM(hidden_size,input_shape=[199,13]))
     model.add(Dense(1,activation=activation))
 
     model.compile(optimizer='adam',
@@ -73,17 +76,17 @@ def crear_modelo():
     for i in range(vh+1):
         if(i>0):
             inputs.append(obtener_muestra(grupo+"validas/vh"+str(i)))
-            if(i==((i*6)+1) or i==1):
-                results.append(valida)  #Ponderacion de las muestras reales
-            else:
-                results.append(0.75)    #Ponderacion de las muestras artificiales
+            #if(i==((i*6)+1) or i==1):
+            results.append(valida)  #Ponderacion de las muestras reales
+            #else:
+            #    results.append(0.75)    #Ponderacion de las muestras artificiales
     for i in range(vm+1):
         if(i>0):
             inputs.append(obtener_muestra(grupo+"validas/vm"+str(i)))
-            if(i==((i*6)+1) or i==1):
-                results.append(valida)  #Ponderacion de las muestras reales
-            else:
-                results.append(0.75)    #Ponderacion de las muestras artificiales
+            #if(i==((i*6)+1) or i==1):
+            results.append(valida)  #Ponderacion de las muestras reales
+            #else:
+            #    results.append(0.75)    #Ponderacion de las muestras artificiales
     for i in range(nh+1):
         if(i>0):
             inputs.append(obtener_muestra(grupo+"novalidas/nh"+str(i)))
