@@ -12,15 +12,22 @@ import soundfile as sf
 import matplotlib.pyplot as plt
 import random
 
+#Area de trabajo
+area="muestras"
+#area="muestras"
+
+#Zona de volcado
+zona="muestras2"
+#zona="muestras2"
+
 def grabar(path):
-    if(path==None):
-        path='muestras/nada.wav'
-    else:
-        path= "muestras/"+ path +".wav"
 
     print("Grabando")
     duration = 2
-    fs = 16000
+    if(area=="muestras"):
+        fs = 16000
+    else:
+        fs = 44100
     rec = sd.rec(duration * fs, samplerate=fs,channels=1, dtype='int16')
     sd.wait()
 
@@ -51,13 +58,18 @@ def espectrograma(wav):
 
 def melFeatures(wav):
     sample_rate, samples = wavfile.read(wav)
-    features= psf.mfcc(samples, sample_rate)
-
+    if(area=="muestras"):
+        features= psf.mfcc(samples, sample_rate)
+    else:
+        features= psf.mfcc(samples, sample_rate,nfft=2048)
     dir= wav.split(".")[0]
     np.savetxt(dir,features)
 
 def instaMel(grab,fs):
-    return psf.mfcc(grab, fs)
+    if(area=="muestras"):
+        return psf.mfcc(grab, fs)
+    else:
+        return psf.mfcc(grab, fs,nfft=2048)
 
 def gestor_muestras(path):
     file= open(path)
@@ -76,9 +88,10 @@ def mod_gestor(vh,vm,nh,nm,t,path):
     file.write("Valida\nHombre\n"+str (vh)+"\nMujer\n"+str (vm)+"\nNo valida\nHombre\n"+str (nh)+"\nMujer\n"+str (nm)+"\nTest\n"+str (t))
     file.close()
 
-def mod_muestra(path):    
-    vh,vm,nh,nm,t =gestor_muestras("muestras2/gestor_muestras.txt");
-    s=wavfile.read("muestras/"+path +".wav")
+def mod_muestra(path):
+
+    vh,vm,nh,nm,t =gestor_muestras(zona+"/gestor_muestras.txt");
+    s=wavfile.read(area+path +".wav")
     
     #obtener el numero independientemente del formato
     if not(len(path.split("vh"))<2):
@@ -99,19 +112,22 @@ def mod_muestra(path):
         n=int(path.split("nm")[1])
 
     index=n+(5*(n-1))
-    shutil.copyfile("muestras/"+ format +case + str(n), "muestras2/"+ format +case +str(index))
+    shutil.copyfile(area+"/"+ format +case + str(n), zona+"/"+ format +case +str(index))
 
-    m=instaMel(s[1],16000)
+    if (area=="muestras"):
+        m=instaMel(s[1],16000)
+    else:
+        m=instaMel(s[1],44100)
 
     for i in range(index+1,index+6):
         rand=random.uniform(0.9,1.1)
         mm=m*rand
-        np.savetxt("muestras2/"+format +case +str(i),mm)
+        np.savetxt(zona+"/"+format +case +str(i),mm)
     if(case=="vh"):
-        mod_gestor(vh+6,vm,nh,nm,t,"muestras2/gestor_muestras.txt")
+        mod_gestor(vh+6,vm,nh,nm,t,zona+"/gestor_muestras.txt")
     elif(case=="vm"):
-        mod_gestor(vh,vm+6,nh,nm,t,"muestras2/gestor_muestras.txt")
+        mod_gestor(vh,vm+6,nh,nm,t,zona+"/gestor_muestras.txt")
     elif(case=="nh"):
-        mod_gestor(vh,vm,nh+6,nm,t,"muestras2/gestor_muestras.txt")
+        mod_gestor(vh,vm,nh+6,nm,t,zona+"/gestor_muestras.txt")
     if(case=="nm"):
-        mod_gestor(vh,vm,nh,nm+6,t,"muestras2/gestor_muestras.txt")
+        mod_gestor(vh,vm,nh,nm+6,t,zona+"/gestor_muestras.txt")

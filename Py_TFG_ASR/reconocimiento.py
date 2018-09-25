@@ -53,12 +53,11 @@ def crear_modelo():
     print("Creando Modelo...")
     model= Sequential()
     #model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
-    #model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
-    model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
-    model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
-    model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
-    model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13])))
-    #model.add(CuDNNLSTM(hidden_size,input_shape=[199,13]))
+    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
+    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
+    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
+    #model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13])))
+    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13]))
     model.add(Dense(1,activation=activation))
 
     model.compile(optimizer='adam',
@@ -127,6 +126,7 @@ def crear_modelo():
 
     model.save("modelo_comando")
     print("Modelo guardado")
+    return model;
 
 def entrenar_modelo(path,correct):
     print("Procediendo a entrenar modelo...")
@@ -150,9 +150,6 @@ def obtener_prediccion(path):
     model=keras.models.load_model("modelo_comando")
     print("Procesando prediccion...")
     
-    while not (Path("muestras/"+path).is_file()):
-        print("El archivo indicado no existe, introduzca uno valido")
-        path=input()
     candidate= obtener_muestra("muestras/"+path)
     result= model.predict(np.expand_dims(candidate,axis=0))
     
@@ -170,4 +167,6 @@ def insta_pred(mel):
         print("COMANDO ", result[0])
     else:
         print("NO COMANDO ", result[0])
+    
+    return model
     

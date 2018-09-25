@@ -1,1 +1,1 @@
-El 4BLSTM todavia no ha dado fallos conocidos (excepto volando, ese es un fallo asumido)
+4LSTM ofrece resultados decentes por lo que parece
