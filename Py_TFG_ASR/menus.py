@@ -7,11 +7,7 @@ def Menu():
     print("Menu de opciones principales:")
     print("\t1)Grabar nueva muestra")
     print("\t2)Crear modelo")
-<<<<<<< HEAD
     print("\t3)Cargar modelo")
-=======
-    print("\t3)Cargar modelo")#Entrenar modelo(Deprecated)
->>>>>>> 5ffa6296f64dc8bc0fb74aeee802443b12dd9c5e
     print("\t4)Predecir muestra")
     print("\t5)Ejecutar programa")
     print("\t6)Ejecucion continua (TODO)")
