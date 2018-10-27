@@ -9,6 +9,8 @@ from scipy.io import wavfile
 from scipy import signal
 import python_speech_features as psf
 import soundfile as sf
+import pydub
+import ffmpeg
 import matplotlib.pyplot as plt
 import random
 
@@ -59,7 +61,7 @@ def espectrograma(wav):
 def melFeatures(wav):
     sample_rate, samples = wavfile.read(wav)
     if(area=="muestras"):
-        features= psf.mfcc(samples, sample_rate)
+        features= psf.mfcc(samples,sample_rate,winlen=0.02,winstep=0.003,numcep=12,winfunc=numpy.hamming(320))
     else:
         features= psf.mfcc(samples, sample_rate,nfft=2048)
     dir= wav.split(".")[0]
@@ -120,7 +122,7 @@ def mod_muestra(path):
         m=instaMel(s[1],44100)
 
     for i in range(index+1,index+6):
-        rand=random.uniform(0.9,1.1)
+        rand=random.uniform(0.98,1.02)
         mm=m*rand
         np.savetxt(zona+"/"+format +case +str(i),mm)
     if(case=="vh"):
@@ -131,3 +133,30 @@ def mod_muestra(path):
         mod_gestor(vh,vm,nh+6,nm,t,zona+"/gestor_muestras.txt")
     if(case=="nm"):
         mod_gestor(vh,vm,nh,nm+6,t,zona+"/gestor_muestras.txt")
+
+def procesar_audios(file):
+    
+    pydub.AudioSegment.converter="D:\\Usuarios\\bielorju\\AppData\\Roaming\\Python\\Python36\\site-packages\\ffmpeg\\ffmpeg-4.0.2-win64-static\\bin\\ffmpeg.exe"
+    audio= pydub.AudioSegment.from_ogg(file)
+
+    audio_chunks = split_on_silence(sound_file, 
+    # must be silent for at least half a second
+    min_silence_len=500,
+
+    # consider it silent if quieter than -16 dBFS
+    silence_thresh=-16
+    )
+
+    for i, chunk in enumerate(audio_chunks):
+        if(len(chunk)<2000):
+            chunk=rellenar_audio(chunk);
+
+    for i, chunk in enumerate(audio_chunks):
+        out_file = "/audios/procesados/chunk{0}.wav".format(i)
+        print ("exporting " + out_file)
+        chunk.export(out_file, format="wav")
+
+def rellenar_audio(chunk):
+    silence=2000-len(chunk)
+    silence_audio= pydub.AudioSegment.silent(duration=silence/2)
+    return silence_audio+chunk+silence_audio

@@ -37,6 +37,9 @@ def Menu():
         elif(k=='9'):
             done=True
             return 9
+        elif(k=='p'):
+            return 'p'
+            done=True
         elif(k=='0'):
             done=True
             return 0

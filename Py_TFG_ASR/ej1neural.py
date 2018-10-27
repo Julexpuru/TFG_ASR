@@ -4,6 +4,7 @@ import tflearn
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Activation
+import tensorflow as tf
 
 
 ## 2. Logical OR operator / the data
@@ -60,6 +61,12 @@ def redKeras():
     print("0 or 1:", model.predict(np.array([[0., 1.]])))
     print("1 or 0:", model.predict(np.array([[1., 0.]])))
     print("1 or 1:", model.predict(np.array([[1., 1.]])))
+
+    #pruebas para guardar json que importar a tf
+    #model_json=model.to_json()
+    #with open("model.json", "w") as json_file:
+    #    json_file.write(model_json)
+    #keras.models.save_model(model,"modeloprueba")
 
 #Actualmente probando
 redKeras()

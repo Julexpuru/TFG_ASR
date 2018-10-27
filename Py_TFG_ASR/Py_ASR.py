@@ -144,18 +144,6 @@ while (not done):
             pred(model,sample)
         opt= ui.Menu()
 
-    ###Opcion oculta: Muestras test
-    elif(opt==9):
-        grab,fs,_=rec.grabar(None) ###Grabacion
-
-        ###comprobacion de muestras existentes para establecer id de la nueva
-        vh,vm,nh,nm,t =rec.gestor_muestras("muestras/gestor_muestras.txt");
-        path="muestras/test/test"+str(t+1)
-        rec.mod_gestor(vh,vm,nh,nm,t+1,"muestras/gestor_muestras.txt")
-            
-        rec.guardar_audio(path,fs,grab)
-        opt= ui.Menu()
-
     ###Opcion oculta: Ampliar muestras
     elif(opt==8):
         print("¿Seguro que quiere ampliar las muestras actuales?")
@@ -186,6 +174,30 @@ while (not done):
         print("Muestras artificiales generadas correctamente")
         opt= ui.Menu()
 
+    ###Opcion oculta: Muestras test
+    elif(opt==9):
+        grab,fs,_=rec.grabar(None) ###Grabacion
+
+        ###comprobacion de muestras existentes para establecer id de la nueva
+        vh,vm,nh,nm,t =rec.gestor_muestras("muestras/gestor_muestras.txt");
+        path="muestras/test/test"+str(t+1)
+        rec.mod_gestor(vh,vm,nh,nm,t+1,"muestras/gestor_muestras.txt")
+            
+        rec.guardar_audio(path,fs,grab)
+        opt= ui.Menu()
+
+    ###Opcion oculta: Procesar audios
+    elif(opt=='p'):
+        print("Introduzca un audio valido")
+        
+        muestra=input()
+        while not (Path("audios/procesar/"+muestra).is_file()):
+            print("El archivo indicado no existe, introduzca uno valido")
+            muestra=input()
+        
+        rec.procesar_audios("audios/procesar/"+muestra)
+
+        opt= ui.Menu()
     elif(opt==0):
         done=True
            

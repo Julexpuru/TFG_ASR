@@ -3,7 +3,8 @@ from pathlib import Path
 
 import keras
 from keras.models import Sequential
-from keras.layers import Dense, Activation,Bidirectional,LSTM,CuDNNLSTM
+from keras.layers import Dense, Activation,Bidirectional,LSTM,CuDNNLSTM,GRU,Dropout
+import tensorflowjs as tfjs
 
 import sounddevice as sd
 import soundfile as sf
@@ -40,7 +41,7 @@ def crear_modelo():
 
     #Modificar para probar distintos modelos
     hidden_size=100
-    epochs=25
+    epochs=50
     activation="tanh"
 
     if(activation=="tanh"):
@@ -53,14 +54,22 @@ def crear_modelo():
     print("Creando Modelo...")
     model= Sequential()
     #model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
-    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
-    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
-    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
+    #model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
+    #model.add(GRU(hidden_size,input_shape=[199,13],return_sequences=True))
+    model.add(LSTM(hidden_size,input_shape=[199,13],return_sequences=True))
+    model.add(Dropout(0.2))
+    model.add(LSTM(hidden_size,input_shape=[199,13],return_sequences=True))
+    model.add(Dropout(0.2))
+    model.add(LSTM(hidden_size,input_shape=[199,13],return_sequences=True))    
+    model.add(Dropout(0.2))
     #model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13])))
-    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13]))
+    #model.add(CuDNNLSTM(hidden_size,input_shape=[199,13]))
+    model.add(LSTM(hidden_size,input_shape=[199,13]))
+    model.add(Dropout(0.2))
     model.add(Dense(1,activation=activation))
 
-    model.compile(optimizer='adam',
+    opt=keras.optimizers.sgd(lr=0.001,momentum=0.3)
+    model.compile(opt,
                   loss='binary_crossentropy',
                   metrics=['accuracy'])
 
@@ -126,6 +135,7 @@ def crear_modelo():
 
     model.save("modelo_comando")
     print("Modelo guardado")
+    tfjs.converters.save_keras_model(model, "modelotfjs")
     return model;
 
 def entrenar_modelo(path,correct):
