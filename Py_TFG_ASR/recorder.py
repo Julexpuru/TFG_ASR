@@ -141,11 +141,11 @@ def procesar_audios(file):
     audio= pydub.AudioSegment.from_wav(file)
 
     audio_chunks = pydub.silence.split_on_silence(audio, 
-    # must be silent for at least half a second
-    min_silence_len=50,
+    # must be silent for at least(ms)
+    min_silence_len=300,
 
     # consider it silent if quieter than -16 dBFS
-    silence_thresh=-80
+    silence_thresh=-30
     )
 
     for i, chunk in enumerate(audio_chunks):

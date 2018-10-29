@@ -1,12 +1,12 @@
 Valida
 Hombre
-168
+192
 Mujer
-12
+48
 No valida
 Hombre
-414
+690
 Mujer
-18
+756
 Test
 2
