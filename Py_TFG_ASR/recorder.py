@@ -61,7 +61,8 @@ def espectrograma(wav):
 def melFeatures(wav):
     sample_rate, samples = wavfile.read(wav)
     if(area=="muestras"):
-        features= psf.mfcc(samples,sample_rate,winlen=0.02,winstep=0.003,numcep=12,winfunc=numpy.hamming(320))
+        features= psf.mfcc(samples,sample_rate,winlen=0.02,winstep=0.003,winfunc= lambda x:np.hamming(320),numcep=13)
+        #features=psf.mfcc(samples,sample_rate)
     else:
         features= psf.mfcc(samples, sample_rate,nfft=2048)
     dir= wav.split(".")[0]
@@ -69,7 +70,7 @@ def melFeatures(wav):
 
 def instaMel(grab,fs):
     if(area=="muestras"):
-        return psf.mfcc(grab, fs)
+        return psf.mfcc(grab,fs,winlen=0.02,winstep=0.003,winfunc= lambda x:np.hamming(320),numcep=13)
     else:
         return psf.mfcc(grab, fs,nfft=2048)
 
@@ -136,27 +137,25 @@ def mod_muestra(path):
 
 def procesar_audios(file):
     
-    pydub.AudioSegment.converter="D:\\Usuarios\\bielorju\\AppData\\Roaming\\Python\\Python36\\site-packages\\ffmpeg\\ffmpeg-4.0.2-win64-static\\bin\\ffmpeg.exe"
-    audio= pydub.AudioSegment.from_ogg(file)
+    #pydub.AudioSegment.converter="C:/Users/Julen/AppData/Roaming/Python/Python36/site-packages/ffmpeg/ffmpeg-4.0.2-win64-static/bin/ffmpeg.exe"
+    audio= pydub.AudioSegment.from_wav(file)
 
-    audio_chunks = split_on_silence(sound_file, 
+    audio_chunks = pydub.silence.split_on_silence(audio, 
     # must be silent for at least half a second
-    min_silence_len=500,
+    min_silence_len=50,
 
     # consider it silent if quieter than -16 dBFS
-    silence_thresh=-16
+    silence_thresh=-80
     )
 
     for i, chunk in enumerate(audio_chunks):
         if(len(chunk)<2000):
-            chunk=rellenar_audio(chunk);
-
-    for i, chunk in enumerate(audio_chunks):
-        out_file = "/audios/procesados/chunk{0}.wav".format(i)
-        print ("exporting " + out_file)
-        chunk.export(out_file, format="wav")
+            chunk2=rellenar_audio(chunk);
+            out_file = "audios/procesados/chunk{0}.wav".format(i)
+            print ("exporting " + out_file)
+            chunk2.export(out_file, format="wav")
 
 def rellenar_audio(chunk):
     silence=2000-len(chunk)
-    silence_audio= pydub.AudioSegment.silent(duration=silence/2)
+    silence_audio= pydub.AudioSegment.silent(duration=(silence/2),frame_rate=16000)
     return silence_audio+chunk+silence_audio

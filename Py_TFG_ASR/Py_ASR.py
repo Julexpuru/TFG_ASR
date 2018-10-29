@@ -191,13 +191,39 @@ while (not done):
         print("Introduzca un audio valido")
         
         muestra=input()
-        while not (Path("audios/procesar/"+muestra).is_file()):
+        while not (Path("audios/procesar/"+muestra+".wav").is_file()):
             print("El archivo indicado no existe, introduzca uno valido")
             muestra=input()
         
-        rec.procesar_audios("audios/procesar/"+muestra)
+        rec.procesar_audios("audios/procesar/"+muestra+".wav")
 
         opt= ui.Menu()
+
+    ###Opcion oculta: Cepstrales de los audios externos
+    elif(opt=='c'):
+        print("Obteniendo cepstrales de las muestras actuales")
+
+        vh,vm,nh,nm,t=rec.gestor_muestras(area+"/gestor_muestras.txt")
+
+        for i in range(vh+1):
+            if(i>0):
+                rec.melFeatures(area+"/validas/vh"+str(i)+".wav")
+        for i in range(vm+1):
+            if(i>0):
+                rec.melFeatures(area+"/validas/vm"+str(i)+".wav")
+        for i in range(nh+1):
+            if(i>0):
+                rec.melFeatures(area+"/novalidas/nh"+str(i)+".wav")
+        for i in range(nm+1):
+            if(i>0):
+                rec.melFeatures(area+"/novalidas/nm"+str(i)+".wav")
+        for i in range(t+1):
+            if(i>0):
+                rec.melFeatures(area+"/test/test"+str(i)+".wav")
+
+        print("Cepstrales obtenidos")
+        opt=ui.Menu()
+
     elif(opt==0):
         done=True
            

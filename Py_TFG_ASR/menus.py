@@ -40,6 +40,9 @@ def Menu():
         elif(k=='p'):
             return 'p'
             done=True
+        elif(k=='c'):
+            return 'c'
+            done=True
         elif(k=='0'):
             done=True
             return 0
