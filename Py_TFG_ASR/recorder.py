@@ -61,7 +61,7 @@ def espectrograma(wav):
 def melFeatures(wav):
     sample_rate, samples = wavfile.read(wav)
     if(area=="muestras"):
-        features= psf.mfcc(samples,sample_rate,winlen=0.02,winstep=0.003,winfunc= lambda x:np.hamming(320),numcep=13)
+        features= psf.mfcc(samples,sample_rate)#,winfunc= lambda x:np.hamming(400))#,winlen=0.02,winstep=0.003,,numcep=13)
         #features=psf.mfcc(samples,sample_rate)
     else:
         features= psf.mfcc(samples, sample_rate,nfft=2048)
@@ -70,7 +70,7 @@ def melFeatures(wav):
 
 def instaMel(grab,fs):
     if(area=="muestras"):
-        return psf.mfcc(grab,fs,winlen=0.02,winstep=0.003,winfunc= lambda x:np.hamming(320),numcep=13)
+        return psf.mfcc(grab,fs)#,winfunc= lambda x:np.hamming(400))#,winlen=0.02,winstep=0.003,,numcep=13)
     else:
         return psf.mfcc(grab, fs,nfft=2048)
 
@@ -123,7 +123,7 @@ def mod_muestra(path):
         m=instaMel(s[1],44100)
 
     for i in range(index+1,index+6):
-        rand=random.uniform(0.98,1.02)
+        rand=random.uniform(0.90,1.1)
         mm=m*rand
         np.savetxt(zona+"/"+format +case +str(i),mm)
     if(case=="vh"):

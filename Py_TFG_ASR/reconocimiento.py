@@ -26,21 +26,15 @@ def obtener_muestra(path):
     return sample
 
 def crear_modelo():
-    
-    #################################################### Opcion Conv
-    #print("Creating Model...")
-    #model= Sequential()
-    #model.add(Dense(100,input_shape=(161,157)))
-    #model.add(Flatten())
-    #model.add(Dense(1))
-    #model.add(Activation('sigmoid'))
-
 
     ################################################### Opcion LSTM
 
     #Modificar para probar distintos modelos
     hidden_size=100
-    epochs=500
+    epochs=150
+    learning=0.001
+    decay_r=learning /epochs
+    moment=0.1
     activation="tanh"
 
     if(activation=="tanh"):
@@ -53,30 +47,31 @@ def crear_modelo():
     print("Creando Modelo...")
     model= Sequential()
     #model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True)))
-    model.add(CuDNNLSTM(hidden_size,input_shape=[661,13],return_sequences=True))
+    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
     #model.add(GRU(hidden_size,input_shape=[199,13],return_sequences=True))
     #model.add(LSTM(hidden_size,input_shape=[199,13],return_sequences=True))
     model.add(Dropout(0.2))
     #model.add(LSTM(hidden_size,input_shape=[199,13],return_sequences=True))
-    model.add(CuDNNLSTM(hidden_size,input_shape=[661,13],return_sequences=True))
+    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))
     model.add(Dropout(0.2))
     #model.add(LSTM(hidden_size,input_shape=[199,13],return_sequences=True))
-    model.add(CuDNNLSTM(hidden_size,input_shape=[661,13],return_sequences=True))    
+    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13],return_sequences=True))    
     model.add(Dropout(0.2))
     #model.add(Bidirectional(CuDNNLSTM(hidden_size,input_shape=[199,13])))
-    model.add(CuDNNLSTM(hidden_size,input_shape=[661,13]))
+    model.add(CuDNNLSTM(hidden_size,input_shape=[199,13]))
     #model.add(LSTM(hidden_size,input_shape=[199,13]))
     model.add(Dropout(0.2))
     model.add(Dense(1,activation=activation))
 
-    opt=keras.optimizers.sgd(lr=0.001,momentum=0.3)
+    opt=keras.optimizers.sgd(lr=learning,momentum=moment,decay=decay_r)
+    #opt=keras.optimizers.adam(lr=0.0001)
     model.compile(opt,
-                  loss='binary_crossentropy',
+                  loss='mse',
                   metrics=['accuracy'])
 
     ###################################################training samples
     print("Obteniendo muestras disponibles")
-    grupo="muestras/"
+    grupo="muestras2/"
     inputs=[]
     results=[]
 
